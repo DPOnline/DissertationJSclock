@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+
+<html lang="en-GB">
+	<head>
+		<meta http-equiv="content-type" content="text/html"; charset="utf-8">
+		<title>Clock TESTER</title>
+		<link type="text/css" rel="stylesheet" href="resources/materialize/css/materialize.min.css" media="screen,projection" />
+		<link type="text/css" rel="stylesheet" href="ClockExperiment.css" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	</head>
+
+	<body>
+	<header>
+			<nav class="top-nav purple darken-3">
+				<div class="container">
+					<div class="nav-wrapper">
+						<a id="DP-title" class="brand-logo">DP Online</a>
+					</div>
+				</div>
+				<div class="container">
+					<a href="#" data-activates="slide-out" class="button-collapse">
+						<i class="mdi-navigation-menu"></i>
+					</a>
+				</div>
+				<ul id="slide-out" class="side-nav fixed collapsible collapsible-accordion">
+					<li class="logo">
+						<a id="logo-container" href="#">
+							<img id="from-page-logo" src="resources/images/DPlogo.png" class="center-align"/>
+						</a>
+					</li>
+					<li class="bold">
+						<a href="#!" class="collapsible-header">Call or Email</a>
+					</li>
+					<li class="bold">
+						<a href="#!" class="collapsible-header">Which Store&#63;</a>
+					</li>
+					<li class="bold">
+						<a class="collapsible-header" href="#">How to Log in</a>
+						<div class="collapsible-body">
+							<ul>
+								<li><a href="#!">University Member</a></li>
+								<li><a href="#!">External Customer</a></li>
+							</ul>
+						</div>
+					</li>
+					<li class="bold">
+						<a href="#!" class="collapsible-header">Home Page</a>
+					</li>
+					<li class="bold">
+						<a class="collapsible-header" href="#">My Account</a>
+						<div class="collapsible-body">
+							<ul>
+								<li><a href="#!">Order History</a></li>
+								<li><a href="#!">Personal Info</a></li>
+								<li><a href="#!">Addresses</a></li>
+								<li><a href="#!">Recipient Lists</a></li>
+							</ul>
+						</div>
+					</li>
+					<li class="bold">
+						<a class="collapsible-header" href="#">Ordering a Product</a>
+						<div class="collapsible-body">
+							<ul>
+								<li><a href="#!">Static Products</a></li>
+								<li><a href="#!">Template Products</a></li>
+								<li><a href="#!">Upload Products</a></li>
+							</ul>
+						</div>
+					</li>
+					<li class="bold">
+						<a class="collapsible-header" href="#">Checking Out</a>
+						<div class="collapsible-body">
+							<ul>
+								<li><a href="#!">Cart</a></li>
+								<li><a href="#!">Terms &amp; Conditions</a></li>
+								<li><a href="#!">Address Details</a></li>
+								<li><a href="#!">Submission</a></li>
+							</ul>
+						</div>
+					</li>
+					<li class="bold">
+						<a class="collapsible-header" href="#">How do I pay&#63;</a>
+						<div class="collapsible-body">
+							<ul>
+								<li><a href="#!">Work Order</a></li>
+								<li><a href="#!">Debit Card</a></li>
+							</ul>
+						</div>
+					</li>
+					<li class="bold">
+						<a class="collapsible-header" href="#">What happens next&#63;</a>
+						<div class="collapsible-body">
+							<ul>
+								<li><a href="#!">Email Confirmation</a></li>
+								<li><a href="#!">Collection</a></li>
+								<li><a href="#!">Campus Delivery</a></li>
+							</ul>
+						</div>
+					</li>
+				</ul>
+			</nav>
+		</header>
+		
+		
+		<main>
+			<div class="container">
+				<div class="row">
+					<div id="serverClock" class="col s12 m9 l8">
+						<div class="card-panel teal">
+							<p class="white-text">The current datetime is <span id="clockHour">00</span>:<span id="clockMins">00</span>:<span id="clockSeconds">00</span> <span id="clockDay">Day</span>, <span id="clockDate">00</span><span id="clockDateSuffix">th</span> <span id="clockMonth">Month</span> <span id="clockYear">2999</span></p>
+							<p class="white-text"> Delivery selected is <span id="deliveryName">11am</span>.</p>
+							<p id="delivery11amClock" class="white-text">If you order NOW (cutoff 5am) your product will be ready by 11:00:00 (11am) <span id="delivery11amDay">Day</span>, <span id="delivery11amDate">00</span><span id="delivery11amDateSuffix">th</span> <span id="delivery11amMonth">Month</span> <span id="delivery11amYear">2999</span></p>
+						</div>
+						<br />
+						<div class="card-panel teal">
+							<p class="white-text">The current datetime is: See above! </p>
+							<p class="white-text"> Delivery selected is <span id="deliveryName">1days</span>.</p>
+							<p id="delivery1dayClock" class="white-text">If you order NOW (cutoff 4pm) your product will be ready by 16:00:00 (4pm) <span id="delivery1dayDay">Day</span>, <span id="delivery1dayDate">00</span><span id="delivery1dayDateSuffix">th</span> <span id="delivery1dayMonth">Month</span> <span id="delivery1dayYear">2999</span></p>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col s4 offset-s4">
+						<input id="dateInput" type="date" />
+					</div>
+					<div class="col s4">
+						<input id="timeInput" type="time" />
+					</div>
+				</div>
+			</div>
+		</main>
+		
+		
+		<footer>
+		
+		</footer>
+		
+		<script type="text/javascript" src="resources/jquery-2.1.1.js"></script>
+		<script type="text/javascript" src="resources/materialize/js/materialize.min.js"></script>
+		<script type="text/javascript" src="ClockExperiment.js"></script>
+	</body>
+</html>
