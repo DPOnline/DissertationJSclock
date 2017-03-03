@@ -16,7 +16,6 @@ $(document).ready(function(){
 			delivery1day();
 		}
 	}
-	console.log(serverTime);
 });
 
 
