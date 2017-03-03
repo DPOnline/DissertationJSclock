@@ -151,7 +151,9 @@ function testForBankHoliday(timeNow, whichBH, daysBefore){
 		let testDate = currentBHobj.setDate(currentBHobj.getDate() - daysBefore);
 		let testDateObj = new Date(testDate);
 		
-		if(timeNow.getDate() == testDateObj.getDate() && timeNow.getMonth() == testDateObj.getMonth() && timeNow.getFullYear() == testDateObj.getFullYear()){
+		if(timeNow.getDate() == testDateObj.getDate() 
+		&& timeNow.getMonth() == testDateObj.getMonth() 
+		&& timeNow.getFullYear() == testDateObj.getFullYear()){
 			output = true;
 		}
 	}
