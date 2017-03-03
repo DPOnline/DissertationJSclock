@@ -10,4 +10,3 @@ Files are for the testing page. To alter JS files for live uStore application yo
   Uncomment AJAX call to server in pullRequest()
   Comment out/delete 'serverTime = new Date();' in pullRequest()
   Delete the anon function that listens for #dateInput change
-  
