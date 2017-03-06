@@ -24,13 +24,21 @@ $(document).ready(function(){
 /////////////////////
 var serverTime = 0;
 var offset = 0;
+var BHwarning = false;
 const DAYARRAY = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const MONTHARRAY = ['January', 'Febuary', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+//WHEN SETTING ALL DATES ENSURE THEY ARE OF FORM YYYY/MM/DD
 const MONDAYBH = ['2017/04/17','2017/05/01','2017/05/29','2017/08/28','2018/04/02','2018/05/07','2018/05/28','2018/08/27'];
 const FRIDAYBH = ['2017/04/14', '2018/03/30'];
 const CHRISTMAS = {
-	start: '2017/12/23',
-	finish: '2018/01/01'
+	start: '2017/12/22', //set this as last working day before christmas holidays
+	finish: '2018/01/02', //set this as the first day back after the christmas holidays
+	startObj: function(){
+		return new Date(this.start);
+	},
+	finishObj: function(){
+		return new Date(this.finish);
+	}
 }
 
 
@@ -159,6 +167,16 @@ function testForBankHoliday(timeNow, whichBH, daysBefore){
 	return output;
 }
 
+/////////////////////
+//APPEND BH WARNING//
+/////////////////////
+function holidayWarning(){
+	if(BHwarning === false){
+		$('#serverClock').append('<p>WARNING: THIS DELIVERY IS AFFECTED BY A PUBLIC HOLIDAY. DOUBLE CHECK EXPECTED DELIVERY TIME.</p>');
+		BHwarning = true;
+	}
+}
+
 
 /////////////////
 //11am DELIVERY//
@@ -167,12 +185,30 @@ function delivery11am(){
 	var newTime = new Date(serverTime);
 	newTime.setTime(newTime.getTime() + offset*1000);
 	
+	//IF CHRISTMAS
+	if(newTime.getTime() > CHRISTMAS.startObj().getTime() && newTime.getTime() < CHRISTMAS.finishObj().getTime()){
+		if(newTime.getHours() < 5 && newTime.getDate() === CHRISTMAS.startObj().getDate() && newTime.getMonth() === CHRISTMAS.startObj().getMonth()){
+			newTime.setDate(newTime.getDate() + 0);
+			updateDelivery(newTime, "11am");
+			holidayWarning();
+			return;
+		}else{
+			newTime.setDate(CHRISTMAS.finishObj().getDate());
+			newTime.setMonth(CHRISTMAS.finishObj().getMonth());
+			newTime.setFullYear(CHRISTMAS.finishObj().getFullYear());
+			updateDelivery(newTime, "11am");
+			holidayWarning();
+			return;
+		}
+	}
+	
 	//IF DAY IS SATURDAY
 	if(newTime.getDay() === 6){
 		
 		if(testForBankHoliday(newTime, 'monday', 2) === true){
 			newTime.setDate(newTime.getDate() + 3);
 			updateDelivery(newTime, "11am");
+			holidayWarning();
 		}else{
 			newTime.setDate(newTime.getDate() + 2);
 			updateDelivery(newTime, "11am");
@@ -185,6 +221,7 @@ function delivery11am(){
 		if(testForBankHoliday(newTime, 'monday', 1) === true){
 			newTime.setDate(newTime.getDate() + 2);
 			updateDelivery(newTime, "11am");
+			holidayWarning();
 		}else{
 			newTime.setDate(newTime.getDate() + 1);
 			updateDelivery(newTime, "11am");
@@ -197,6 +234,7 @@ function delivery11am(){
 		if(testForBankHoliday(newTime, 'monday', 0) === true){
 			newTime.setDate(newTime.getDate() + 1);
 			updateDelivery(newTime, "11am");
+			holidayWarning();
 		}else{
 			if(newTime.getHours() < 5){
 				newTime.setDate(newTime.getDate() + 0);
@@ -214,6 +252,7 @@ function delivery11am(){
 		if(testForBankHoliday(newTime, 'friday', 0) === true){
 			newTime.setDate(newTime.getDate() + 4);
 			updateDelivery(newTime, "11am");
+			holidayWarning();
 		
 		}else if(testForBankHoliday(newTime, 'monday', 3) === true){
 			if(newTime.getHours() < 5){
@@ -222,6 +261,7 @@ function delivery11am(){
 			}else{
 				newTime.setDate(newTime.getDate() + 4);
 				updateDelivery(newTime, "11am");
+				holidayWarning();
 			}
 		}else{
 			if(newTime.getHours() < 5){
@@ -244,6 +284,7 @@ function delivery11am(){
 			}else{
 				newTime.setDate(newTime.getDate() + 5);
 				updateDelivery(newTime, "11am");
+				holidayWarning();
 			}
 		}else{
 			if(newTime.getHours() < 5){
@@ -276,12 +317,56 @@ function delivery1day(){
 	var newTime = new Date(serverTime);
 	newTime.setTime(newTime.getTime() + offset*1000);
 	
+	//IF CHRISTMAS
+	var dayBeforeChristmas = new Date(CHRISTMAS.startObj().setDate(CHRISTMAS.startObj().getDate() - 1));
+	var dayAfterChristmas = new Date(CHRISTMAS.finishObj().setDate(CHRISTMAS.finishObj().getDate() + 1));
+	
+	if(newTime.getDate() === dayBeforeChristmas.getDate() && newTime.getMonth() === dayBeforeChristmas.getMonth()){
+		if(newTime.getHours() >= 16){
+			newTime.setDate(CHRISTMAS.finishObj().getDate());
+			newTime.setMonth(CHRISTMAS.finishObj().getMonth());
+			newTime.setFullYear(CHRISTMAS.finishObj().getFullYear());
+			updateDelivery(newTime, "1day");
+			holidayWarning();
+			return;
+		}
+	}
+	if(newTime.getTime() > CHRISTMAS.startObj().getTime() && newTime.getTime() < CHRISTMAS.finishObj().getTime()){
+		if(newTime.getDate() === CHRISTMAS.startObj().getDate()){
+			if(newTime.getHours() < 16){
+				newTime.setDate(CHRISTMAS.finishObj().getDate());
+				newTime.setMonth(CHRISTMAS.finishObj().getMonth());
+				newTime.setFullYear(CHRISTMAS.finishObj().getFullYear());
+				updateDelivery(newTime, "1day");
+				holidayWarning();
+				return;
+			}else{
+				newTime.setDate(dayAfterChristmas.getDate());
+				newTime.setMonth(dayAfterChristmas.getMonth());
+				newTime.setFullYear(dayAfterChristmas.getFullYear());
+				updateDelivery(newTime, "1day");
+				holidayWarning();
+				return;
+			}
+		}else{
+			newTime.setDate(dayAfterChristmas.getDate());
+			newTime.setMonth(dayAfterChristmas.getMonth());
+			newTime.setFullYear(dayAfterChristmas.getFullYear());
+			updateDelivery(newTime, "1day");
+			holidayWarning();
+			return;
+		}
+	}
+	
+	
+	
 	//IF DAY IS SATURDAY
 	if(newTime.getDay() === 6){
 
 		if(testForBankHoliday(newTime, 'monday', 2) === true){
 			newTime.setDate(newTime.getDate() + 4);
 			updateDelivery(newTime, "1day");
+			holidayWarning();
 		}else{
 			newTime.setDate(newTime.getDate() + 3);
 			updateDelivery(newTime, "1day");
@@ -294,6 +379,7 @@ function delivery1day(){
 		if(testForBankHoliday(newTime, 'monday', 1) === true){
 			newTime.setDate(newTime.getDate() + 3);
 			updateDelivery(newTime, "1day");
+			holidayWarning();
 		}else{
 			newTime.setDate(newTime.getDate() + 2);
 			updateDelivery(newTime, "1day");
@@ -306,6 +392,7 @@ function delivery1day(){
 		if(testForBankHoliday(newTime, 'monday', 0) === true){
 			newTime.setDate(newTime.getDate() + 2);
 			updateDelivery(newTime, "1day");
+			holidayWarning();
 		}else{
 			if(newTime.getHours() < 16){
 				newTime.setDate(newTime.getDate() + 1);
@@ -323,14 +410,17 @@ function delivery1day(){
 		if(testForBankHoliday(newTime, 'friday', 0) === true){
 			newTime.setDate(newTime.getDate() + 5);
 			updateDelivery(newTime, "1day");
+			holidayWarning();
 		
 		}else if(testForBankHoliday(newTime, 'monday', 3) === true){
 			if(newTime.getHours() < 16){
 				newTime.setDate(newTime.getDate() + 4);
 				updateDelivery(newTime, "1day");
+				holidayWarning();
 			}else{
 				newTime.setDate(newTime.getDate() + 5);
 				updateDelivery(newTime, "1day");
+				holidayWarning();
 			}
 			
 		}else{
@@ -351,9 +441,11 @@ function delivery1day(){
 			if(newTime.getHours() < 16){
 				newTime.setDate(newTime.getDate() + 5);
 				updateDelivery(newTime, "1day");
+				holidayWarning();
 			}else{
 				newTime.setDate(newTime.getDate() + 6);
 				updateDelivery(newTime, "1day");
+				holidayWarning();
 			}
 		}else if(testForBankHoliday(newTime, 'monday', 4)){
 			if(newTime.getHours() < 16){
@@ -362,6 +454,7 @@ function delivery1day(){
 			}else{
 				newTime.setDate(newTime.getDate() + 5);
 				updateDelivery(newTime, "1day");
+				holidayWarning();
 			}
 		}else{
 			if(newTime.getHours() < 16){
@@ -375,7 +468,7 @@ function delivery1day(){
 	}
 	
 	//IF DAY IS WEDNESDAY
-	else if(newTime.getDay === 3){
+	else if(newTime.getDay() === 3){
 		
 		if(testForBankHoliday(newTime, 'friday', 2) === true){
 			if(newTime.getHours() < 16){
@@ -384,6 +477,7 @@ function delivery1day(){
 			}else{
 				newTime.setDate(newTime.getDate() + 6);
 				updateDelivery(newTime, "1day");
+				holidayWarning();
 			}
 		}else{
 			if(newTime.getHours() < 16){
@@ -398,11 +492,11 @@ function delivery1day(){
 	
 	//IF ANY OTHER DAY (IE TUESDAY!!)
 	else{
-		if(newTime.getHours() < 5){
-			newTime.setDate(newTime.getDate() + 0);
+		if(newTime.getHours() < 16){
+			newTime.setDate(newTime.getDate() + 1);
 			updateDelivery(newTime, "1day");
 		}else{
-			newTime.setDate(newTime.getDate() + 1);
+			newTime.setDate(newTime.getDate() + 2);
 			updateDelivery(newTime, "1day");
 		}
 	}
